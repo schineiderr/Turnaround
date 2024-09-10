@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+st-gsheets-connection
+streamlit_gsheets
+text-generation
