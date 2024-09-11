@@ -81,12 +81,21 @@ settings = st.Page("settings.py", title="Settings", icon=":material/settings:")
 
 request_1 = st.Page(
     "request/request_1.py",
-    title="Solicitante 1",
+    title="Iniciativas",
     icon=":material/help:",
     default=(role == "Solicitante"),
 )
 request_2 = st.Page(
-    "request/request_2.py", title="Solicitante 2", icon=":material/bug_report:"
+    "request/request_2.py", title="Abertura de Tickets", icon=":material/bug_report:"
+)
+request_3 = st.Page(
+    "request/request_3.py", title="Acompanhe seu Desenvolvimento", icon=":material/bug_report:"
+)
+request_4 = st.Page(
+    "request/request_4.py", title="Receita Transformada", icon=":material/bug_report:"
+)
+request_5 = st.Page(
+    "request/request_5.py", title="Pesquisa NPS", icon=":material/bug_report:"
 )
 
 respond_1 = st.Page(
@@ -108,7 +117,7 @@ admin_1 = st.Page(
 admin_2 = st.Page("admin/admin_2.py", title="Admin 2", icon=":material/security:")
 
 account_pages = [logout_page, settings]
-request_pages = [request_1, request_2]
+request_pages = [request_1, request_2, request_3, request_4, request_5]
 respond_pages = [respond_1, respond_2]
 admin_pages = [admin_1, admin_2]
 
