@@ -26,12 +26,13 @@ def get_role(user, rows):
 
 if "role" not in st.session_state:
     st.session_state["role"] = None
+if "user" not in st.session_state:
+    st.session_state["user"] = None
 
 ROLES = [None, "Cadastrar", "Solicitante", "Membro", "Admin"]
 
 def login():
     st.header("Login")
-    #role = st.selectbox("Selecione seu perfil", ROLES)
     user = st.text_input("E-mail:")
     role = get_role(user, rows)
     col1, col2 = st.columns([1,8])
@@ -40,6 +41,7 @@ def login():
             st.error("Usuário não encontrado!")
         else:
             st.session_state["role"] = role
+            st.session_state["user"] = user
             st.rerun()
     if col2.button("Cadastrar"):
         st.session_state["role"] = "Cadastrar"
