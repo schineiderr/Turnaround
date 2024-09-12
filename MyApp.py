@@ -9,9 +9,13 @@ def mysheet():
     conn = st.connection("gsheets", type=GSheetsConnection)
     return conn
 
+@st.cache_data
+def selectall(_conn, table):
+    return conn.query(f"SELECT * FROM {table}")
+
 conn = mysheet()
 
-lista_usuarios = conn.read(worksheet="usuarios")
+lista_usuarios = selectall(conn, "usuarios")
 
 @st.cache_data
 def get_role(user, lista_usuarios):

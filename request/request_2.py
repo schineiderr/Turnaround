@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-from MyApp import mysheet, conn
+from MyApp import mysheet, selectall, conn
 
-lista_contratos = conn.query("SELECT * FROM contratos")["contrato"]
+tabela_contratos = selectall(conn, "contratos")
+lista_contratos = tabela_contratos["contrato"]
 
 def generate_tasks(conn, id_form, solicitacao):
-    current_table = conn.query("SELECT * FROM tasks")
+    current_table = selectall(conn, "tasks")
     id = max(current_table['id_task'])
     if solicitacao == "Novo Desenvolvimento":
         tasks = ["Reunião de Entendimento", "Elaboração de Proposta", "Desenvolvimento"]
@@ -66,7 +67,7 @@ with st.form(key="forms_new_project"):
 
 if submit_button:
     try:
-        current_table = conn.query("SELECT * FROM forms")
+        current_table = selectall(conn, "forms")
         id = max(current_table['id'])+1
         actual_update = pd.DataFrame.from_dict({
             "id":[id],
