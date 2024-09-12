@@ -1,6 +1,6 @@
 [server]
 headless = false
-enableXsrfProtection = false
+enableXsrfProtection = true
 enableCORS = true
 
 [theme]
