@@ -8,19 +8,40 @@ conn, rows = mysheet()
 
 lista_contratos = conn.query("SELECT * FROM contratos")["contrato"]
 
+def generate_tasks(conn, id_form, solicitacao):
+    current_table = conn.query("SELECT * FROM tasks")
+    id = max(current_table['id_task'])
+    if solicitacao == "Novo Desenvolvimento":
+        tasks = ["Reunião de Entendimento", "Elaboração de Proposta", "Desenvolvimento"]
+    elif solicitacao == "Conheci a solução e quero em meu contrato":
+        tasks = ["Avaliar Solicitação", "Implementar Desenvolvimento", "Validar"]
+    elif solicitacao == "Melhorias ou Ajustes em Desenvolvimento Entregue":
+        tasks = ["Avaliar Solicitação", "Realizar Melhorias ou Ajustes", "Validar"]
+    actual_update = pd.DataFrame.from_dict({
+        "id_forms": [id_form, id_form, id_form],
+        "id_task": [id+1, id+2, id+3],
+        "task": tasks,
+        "start_date": ["", "", ""],
+        "due_date": ["", "", ""],
+        "end_date": ["", "", ""],
+        "bucket": ["Backlog", "Backlog", "Backlog"],
+        "description": ["", "", ""],
+        "responsible": ["", "", ""]})
+    aux = pd.concat([current_table, actual_update], ignore_index=False)
+    new_table = conn.update(worksheet="tasks",data=aux)
+    st.cache_data.clear()
+
 st.header("Abertura de Tickets")
 
 with st.form("user_input_form"):
     email = st.text_input("Email", value=st.session_state["user"])
     d1, d2 = st.columns([1,3])
-    with d1, d2:
-        data = d1.date_input(label="Data", value="default_value_today", format="DD/MM/YYYY")
-        name = d2.text_input("Nome")
+    data = d1.date_input(label="Data", value="default_value_today", format="DD/MM/YYYY")
+    name = d2.text_input("Nome")
     c1, c2, c3 = st.columns([3,2,2])
-    with c1, c2, c3:
-        contrato = c1.selectbox("Contrato", lista_contratos)
-        engmanut = c2.selectbox("Tipo", ("Engenharia", "Manutenção"))
-        escopo = c3.selectbox("Escopo", ("Suporte", "Proposta Financeira"))
+    contrato = c1.selectbox("Contrato", lista_contratos)
+    engmanut = c2.selectbox("Tipo", ("Engenharia", "Manutenção"))
+    escopo = c3.selectbox("Escopo", ("Suporte", "Proposta Financeira"))
     solicitacao = st.selectbox("Qual a sua solicitação?",
                                ("Novo Desenvolvimento",
                                 "Conheci a solução e quero em meu contrato",
@@ -47,22 +68,25 @@ with st.form("user_input_form"):
     submit_button = st.form_submit_button("Enviar")
 
 if submit_button:
-    df = pd.DataFrame.from_dict({"data": [data],
-                                 "name": [name],
-                                 "email": [email],
-                                 "contrato": [contrato],
-                                 "eng_manut": [engmanut],
-                                 "escopo": [escopo],
-                                 "solicitacao": [solicitacao],
-                                 "new_solution": [new_solution],
-                                 "apply_solution": [apply_solution],
-                                 "support_solution": [support_solution]})
     try:
         current_table = conn.query("SELECT * FROM forms")
-        actual_update = df
-        aux = pd.concat([current_table, actual_update], ignore_index=True)
+        id = max(current_table['id'])+1
+        actual_update = pd.DataFrame.from_dict({
+            "id":[id],
+            "data_solicitacao": [data],
+            "name": [name],
+            "email": [email],
+            "contrato": [contrato],
+            "eng_manut": [engmanut],
+            "escopo": [escopo],
+            "solicitacao": [solicitacao],
+            "new_solution": [new_solution],
+            "apply_solution": [apply_solution],
+            "support_solution": [support_solution]})
+        aux = pd.concat([current_table, actual_update], ignore_index=False)
         new_table = conn.update(worksheet="forms",data=aux)
         st.success("Formulário enviado com sucesso!")
+        generate_tasks(conn, id, solicitacao)
         st.cache_data.clear()
         time.sleep(2)
         st.rerun()
