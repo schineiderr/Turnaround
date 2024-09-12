@@ -3,18 +3,19 @@ import pandas as pd
 import time
 from streamlit_gsheets import GSheetsConnection
 
-#rows = [("samuel.bucher@timenow.com.br", "Admin"), ("rychard.malfer@timenow.com.br", "Solicitante")]
-
 # Create a connection object.
+@st.cache_resource
 def mysheet():
     conn = st.connection("gsheets", type=GSheetsConnection)
-    rows = conn.read()
-    return conn, rows
+    return conn
 
-conn, rows = mysheet()
-    
-def get_role(user, rows):
-    for row in rows.itertuples():
+conn = mysheet()
+
+lista_usuarios = conn.read(worksheet="usuarios")
+
+@st.cache_data
+def get_role(user, lista_usuarios):
+    for row in lista_usuarios.itertuples():
         if row.user == user:
             role = row.permission
             break
@@ -34,7 +35,7 @@ ROLES = [None, "Cadastrar", "Solicitante", "Membro", "Admin"]
 def login():
     st.header("Login")
     user = st.text_input("E-mail:")
-    role = get_role(user, rows)
+    role = get_role(user, lista_usuarios)
     col1, col2 = st.columns([1,8])
     if col1.button("Login"):
         if not role:

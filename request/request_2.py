@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-from MyApp import mysheet
-
-conn, rows = mysheet()
+from MyApp import mysheet, conn
 
 lista_contratos = conn.query("SELECT * FROM contratos")["contrato"]
 
@@ -29,11 +27,10 @@ def generate_tasks(conn, id_form, solicitacao):
         "responsible": ["", "", ""]})
     aux = pd.concat([current_table, actual_update], ignore_index=False)
     new_table = conn.update(worksheet="tasks",data=aux)
-    st.cache_data.clear()
 
 st.header("Abertura de Tickets")
 
-with st.form("user_input_form"):
+with st.form(key="forms_new_project"):
     email = st.text_input("Email", value=st.session_state["user"])
     d1, d2 = st.columns([1,3])
     data = d1.date_input(label="Data", value="default_value_today", format="DD/MM/YYYY")
@@ -87,7 +84,7 @@ if submit_button:
         new_table = conn.update(worksheet="forms",data=aux)
         st.success("Formulário enviado com sucesso!")
         generate_tasks(conn, id, solicitacao)
-        st.cache_data.clear()
+        #st.cache_data.clear()
         time.sleep(2)
         st.rerun()
     except Exception as e:
