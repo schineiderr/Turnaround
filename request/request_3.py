@@ -1,17 +1,20 @@
 import streamlit as st
-from MyApp import mysheet, conn
+from MyApp import get_forms, get_tasks
 
 st.header("Acompanhe seu Desenvolvimento")
 user = st.session_state["user"]
 st.write("Você está logado como: ", user)
 
+df_forms = get_forms()
+df_tasks = get_tasks()
 
-lista_desenvolvimentos = conn.query(f"SELECT * FROM forms WHERE email = '{user}'")
+lista_desenvolvimentos = df_forms.query("email == @user")
 lista_id_forms = list(lista_desenvolvimentos["id"])
-lista_tarefas = conn.query(f"SELECT * FROM tasks WHERE id_forms IN {lista_id_forms}")
 
-st.write("Projetos")
+lista_tarefas = df_tasks.query("id_forms in @lista_id_forms")
+
+st.subheader("Projetos")
 st.write(lista_desenvolvimentos)
 
-st.write("Tarefas")
+st.subheader("Tarefas")
 st.write(lista_tarefas)

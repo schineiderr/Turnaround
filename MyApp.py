@@ -10,12 +10,28 @@ def mysheet():
     return conn
 
 @st.cache_data
-def selectall(_conn, table):
-    return conn.query(f"SELECT * FROM {table}")
+def get_contracts():
+    lista_contratos = conn.query(f"SELECT * FROM contratos")
+    return lista_contratos
+
+@st.cache_data
+def get_tasks():
+    lista_tarefas = conn.query(f"SELECT * FROM tasks")
+    return lista_tarefas
+
+@st.cache_data
+def get_forms():
+    lista_projetos = conn.query(f"SELECT * FROM forms")
+    return lista_projetos
+
+@st.cache_data
+def get_users():
+    lista_usuarios = conn.query(f"SELECT * FROM usuarios")
+    return lista_usuarios
 
 conn = mysheet()
 
-lista_usuarios = selectall(conn, "usuarios")
+lista_usuarios = get_users()
 
 @st.cache_data
 def get_role(user, lista_usuarios):
