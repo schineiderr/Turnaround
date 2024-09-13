@@ -2,34 +2,14 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-from MyApp import conn, get_contracts, get_tasks, get_forms
+from utils import conn, get_contracts, get_forms, generate_tasks
 
 tabela_contratos = get_contracts()
 lista_contratos = tabela_contratos["contrato"]
 
-def generate_tasks(conn, id_form, solicitacao):
-    current_table = get_tasks()
-    id = max(current_table['id_task'])
-    if solicitacao == "Novo Desenvolvimento":
-        tasks = ["Reunião de Entendimento", "Elaboração de Proposta", "Desenvolvimento"]
-    elif solicitacao == "Conheci a solução e quero em meu contrato":
-        tasks = ["Avaliar Solicitação", "Implementar Desenvolvimento", "Validar"]
-    elif solicitacao == "Melhorias ou Ajustes em Desenvolvimento Entregue":
-        tasks = ["Avaliar Solicitação", "Realizar Melhorias ou Ajustes", "Validar"]
-    actual_update = pd.DataFrame.from_dict({
-        "id_forms": [id_form, id_form, id_form],
-        "id_task": [id+1, id+2, id+3],
-        "task": tasks,
-        "start_date": ["", "", ""],
-        "due_date": ["", "", ""],
-        "end_date": ["", "", ""],
-        "bucket": ["Backlog", "Backlog", "Backlog"],
-        "description": ["", "", ""],
-        "responsible": ["", "", ""]})
-    aux = pd.concat([current_table, actual_update], ignore_index=False)
-    new_table = conn.update(worksheet="tasks",data=aux)
-
 st.header("Abertura de Tickets")
+
+st.write(st.session_state["user"])
 
 with st.form(key="forms_new_project"):
     email = st.text_input("Email", value=st.session_state["user"])
@@ -83,9 +63,10 @@ if submit_button:
             "support_solution": [support_solution]})
         aux = pd.concat([current_table, actual_update], ignore_index=False)
         new_table = conn.update(worksheet="forms",data=aux)
-        st.success("Formulário enviado com sucesso!")
+        st.info("Formulário sendo criado")
         generate_tasks(conn, id, solicitacao)
-        #st.cache_data.clear()
+        st.success("Formulário enviado com sucesso!")
+        st.cache_data.clear()
         time.sleep(2)
         st.rerun()
     except Exception as e:

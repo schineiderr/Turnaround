@@ -1,47 +1,5 @@
 import streamlit as st
-import pandas as pd
-import time
-from streamlit_gsheets import GSheetsConnection
-
-# Create a connection object.
-@st.cache_resource
-def mysheet():
-    conn = st.connection("gsheets", type=GSheetsConnection)
-    return conn
-
-@st.cache_data
-def get_contracts():
-    lista_contratos = conn.query(f"SELECT * FROM contratos")
-    return lista_contratos
-
-@st.cache_data
-def get_tasks():
-    lista_tarefas = conn.query(f"SELECT * FROM tasks")
-    return lista_tarefas
-
-@st.cache_data
-def get_forms():
-    lista_projetos = conn.query(f"SELECT * FROM forms")
-    return lista_projetos
-
-@st.cache_data
-def get_users():
-    lista_usuarios = conn.query(f"SELECT * FROM usuarios")
-    return lista_usuarios
-
-conn = mysheet()
-
-lista_usuarios = get_users()
-
-@st.cache_data
-def get_role(user, lista_usuarios):
-    for row in lista_usuarios.itertuples():
-        if row.user == user:
-            role = row.permission
-            break
-        else:
-            role = False
-    return role
+from utils import login, new_user
 
 # Start roles definition for pages flow
 
@@ -52,52 +10,11 @@ if "user" not in st.session_state:
 
 ROLES = [None, "Cadastrar", "Solicitante", "Membro", "Admin"]
 
-def login():
-    st.header("Login")
-    user = st.text_input("E-mail:")
-    role = get_role(user, lista_usuarios)
-    col1, col2 = st.columns([1,8])
-    if col1.button("Login"):
-        if not role:
-            st.error("Usuário não encontrado!")
-        else:
-            st.session_state["role"] = role
-            st.session_state["user"] = user
-            st.rerun()
-    if col2.button("Cadastrar"):
-        st.session_state["role"] = "Cadastrar"
-        st.rerun()
-
 role = st.session_state["role"]
 
 def logout():
     st.session_state["role"] = None
     st.rerun()
-
-def new_user():
-    st.write("Faça seu cadastro: ")
-    email = st.text_input("Email: ")
-    col1, col2 = st.columns([1,6])
-    submit_button = col1.button("Cadastrar")
-    back_button = col2.button("Voltar")
-    if submit_button:
-        try:
-            current_table = conn.query("SELECT * FROM usuarios")
-            actual_update = pd.DataFrame({"user": [email], "permission": ['Solicitante']})
-            aux = pd.concat([current_table, actual_update], ignore_index=True)
-            df = conn.update(worksheet="usuarios",data=aux)
-            st.success("Usuário cadastrado com sucesso!")
-            st.session_state["role"] = "Solicitante"
-            st.cache_data.clear()
-            time.sleep(2)
-            st.rerun()
-        except Exception as e:
-            st.error("Usuário Negado")
-            st.write(e)
-            time.sleep(3)
-    if back_button:
-        st.session_state["role"] = None
-        st.rerun()
 
 logout_page = st.Page(logout, title="Logout", icon=":material/logout:")
 settings = st.Page("settings.py", title="Settings", icon=":material/settings:")

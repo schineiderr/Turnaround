@@ -1,5 +1,5 @@
 import streamlit as st
-from MyApp import get_forms, get_tasks
+from utils import get_forms, get_tasks
 
 st.header("Acompanhe seu Desenvolvimento")
 user = st.session_state["user"]
