@@ -88,7 +88,6 @@ def new_user():
         st.session_state["role"] = None
         st.rerun()
 
-@st.cache_data
 def generate_tasks(conn, id_form, solicitacao):
     current_table = get_tasks()
     id = max(current_table['id_task'])

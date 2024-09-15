@@ -73,34 +73,3 @@ if submit_button:
         st.error("Erro ao enviar o formulário! Por favor atualize a página e tente novamente.")
         st.write(e)
         time.sleep(3)
-
-# if submit_button:
-#     b = anexo.getvalue()
-#     with open("teste.txt", "wb") as f:
-#         f.write(b)
-#     df = pd.DataFrame.from_dict({"Nome": [name], "Email": [email], "Solicitação": [solicitacao]})
-#     df["anexo"] = b
-#     try:
-#         if projeto:
-#             df["Projeto"] = projeto
-#             try:
-#                 if outros:
-#                     df["Outros"] = outros
-#             except:
-#                 pass
-#     except:
-#         pass
-
-#    @st.cache_data
-#    def convert_df(df):
-#        return df.to_csv(index=False).encode('utf-8')
-
-#    csv = convert_df(df)
-
-#    st.download_button(
-#    "Clique aqui para download",
-#    csv,
-#    "file.csv",
-#    "text/csv",
-#    key='download-csv'
-#    )
