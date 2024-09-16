@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-from utils import conn, get_contracts, get_forms, generate_tasks
+from utils import get_contracts, get_forms, generate_tasks, conn
 
 tabela_contratos = get_contracts()
+#tabela_contratos = pd.DataFrame.from_dict({"id": ["1", "2"], "contrato": ["Braskem", "Bayer"]})
 lista_contratos = tabela_contratos["contrato"]
 
 st.header("Abertura de Tickets")
-
-st.write(st.session_state["user"])
 
 with st.form(key="forms_new_project"):
     email = st.text_input("Email", value=st.session_state["user"])

@@ -10,28 +10,32 @@ from streamlit_gsheets import GSheetsConnection
 @st.cache_resource
 def mysheet():
     conn = st.connection("gsheets", type=GSheetsConnection)
-    return conn
+    return conn 
 
 conn = mysheet()
 
 @st.cache_data
 def get_contracts():
-    lista_contratos = conn.query(f"SELECT * FROM contratos")
+    #lista_contratos = conn.query(f"SELECT * FROM contratos")
+    lista_contratos = conn.read(worksheet="contratos")
     return lista_contratos
 
 @st.cache_data
 def get_tasks():
-    lista_tarefas = conn.query(f"SELECT * FROM tasks")
+    #lista_tarefas = conn.query(f"SELECT * FROM tasks")
+    lista_tarefas = conn.read(worksheet="tasks")
     return lista_tarefas
 
 @st.cache_data
 def get_forms():
-    lista_projetos = conn.query(f"SELECT * FROM forms")
+    #lista_projetos = conn.query(f"SELECT * FROM forms")
+    lista_projetos = conn.read(worksheet="forms")
     return lista_projetos
 
 @st.cache_data
 def get_users():
-    lista_usuarios = conn.query(f"SELECT * FROM usuarios")
+    #lista_usuarios = conn.query(f"SELECT * FROM usuarios")
+    lista_usuarios = conn.read(worksheet="usuarios")
     return lista_usuarios
 
 @st.cache_data
@@ -45,6 +49,7 @@ def get_role(user, lista_usuarios):
     return role
 
 lista_usuarios = get_users()
+#lista_usuarios = pd.DataFrame.from_dict({"user": ["samuel.bucher@timenow.com.br", "teste"], "permission": ["Admin", "Solicitante"]})
 
 def login():
     st.header("Login")
