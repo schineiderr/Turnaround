@@ -2,12 +2,11 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-#from project.utils import get_contracts, get_forms, generate_tasks, conn
-from project.utils import generate_tasks
+from project.utils import get_contracts, get_forms, generate_tasks, conn
 
 
-#tabela_contratos = get_contracts()
-tabela_contratos = pd.DataFrame.from_dict({"id": ["1", "2", "3"], "contrato": ["Braskem", "Bayer", "Dow"]})
+tabela_contratos = get_contracts()
+#tabela_contratos = pd.DataFrame.from_dict({"id": ["1", "2", "3"], "contrato": ["Braskem", "Bayer", "Dow"]})
 lista_contratos = tabela_contratos["contrato"]
 
 st.header("Abertura de Tickets")
@@ -46,27 +45,24 @@ with st.form(key="forms_new_project"):
     #anexo = st.file_uploader("Tem anexo?")
     submit_button = st.form_submit_button("Enviar")
 
-lista_forms = pd.DataFrame.from_dict({
-            "id":[],
-            "data_solicitacao": [],
-            "name": [],
-            "email": [],
-            "contrato": [],
-            "eng_manut": [],
-            "escopo": [],
-            "solicitacao": [],
-            "new_solution": [],
-            "apply_solution": [],
-            "support_solution": []})
+# lista_forms = pd.DataFrame.from_dict({
+#             "id":[],
+#             "data_solicitacao": [],
+#             "name": [],
+#             "email": [],
+#             "contrato": [],
+#             "eng_manut": [],
+#             "escopo": [],
+#             "solicitacao": [],
+#             "new_solution": [],
+#             "apply_solution": [],
+#             "support_solution": []})
 
 if submit_button:
     try:
-        #current_table = get_forms()
-        current_table = lista_forms
-        if current_table['id'].empty:
-            id = 1
-        else:
-            id = max(current_table['id'])+1
+        current_table = get_forms()
+        #current_table = lista_forms
+        id = max(current_table['id'])+1
         actual_update = pd.DataFrame.from_dict({
             "id":[id],
             "data_solicitacao": [data],
@@ -86,7 +82,7 @@ if submit_button:
         #generate_tasks(conn, id, solicitacao)
         generate_tasks(id, solicitacao)
         st.success("Formulário enviado com sucesso!")
-        #st.cache_data.clear()
+        st.cache_data.clear()
         time.sleep(2)
         st.rerun()
     except Exception as e:

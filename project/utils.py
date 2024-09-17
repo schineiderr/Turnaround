@@ -4,39 +4,39 @@
 import streamlit as st
 import time
 import pandas as pd
-#from streamlit_gsheets import GSheetsConnection
+from streamlit_gsheets import GSheetsConnection
 
-# Create a connection object.
-# @st.cache_resource
-# def mysheet():
-#     conn = st.connection("gsheets", type=GSheetsConnection)
-#     return conn 
+#Create a connection object.
+@st.cache_resource
+def mysheet():
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    return conn 
 
-# conn = mysheet()
+conn = mysheet()
 
-# @st.cache_data
-# def get_contracts():
-#     #lista_contratos = conn.query(f"SELECT * FROM contratos")
-#     lista_contratos = conn.read(worksheet="contratos")
-#     return lista_contratos
+@st.cache_data
+def get_contracts():
+    #lista_contratos = conn.query(f"SELECT * FROM contratos")
+    lista_contratos = conn.read(worksheet="contratos")
+    return lista_contratos
 
-# @st.cache_data
-# def get_tasks():
-#     #lista_tarefas = conn.query(f"SELECT * FROM tasks")
-#     lista_tarefas = conn.read(worksheet="tasks")
-#     return lista_tarefas
+@st.cache_data
+def get_tasks():
+    #lista_tarefas = conn.query(f"SELECT * FROM tasks")
+    lista_tarefas = conn.read(worksheet="tasks")
+    return lista_tarefas
 
-# @st.cache_data
-# def get_forms():
-#     #lista_projetos = conn.query(f"SELECT * FROM forms")
-#     lista_projetos = conn.read(worksheet="forms")
-#     return lista_projetos
+@st.cache_data
+def get_forms():
+    #lista_projetos = conn.query(f"SELECT * FROM forms")
+    lista_projetos = conn.read(worksheet="forms")
+    return lista_projetos
 
-# @st.cache_data
-# def get_users():
-#     #lista_usuarios = conn.query(f"SELECT * FROM usuarios")
-#     lista_usuarios = conn.read(worksheet="usuarios")
-#     return lista_usuarios
+@st.cache_data
+def get_users():
+    #lista_usuarios = conn.query(f"SELECT * FROM usuarios")
+    lista_usuarios = conn.read(worksheet="usuarios")
+    return lista_usuarios
 
 @st.cache_data
 def get_role(user, lista_usuarios):
@@ -48,8 +48,8 @@ def get_role(user, lista_usuarios):
             role = False
     return role
 
-#lista_usuarios = get_users()
-lista_usuarios = pd.DataFrame.from_dict({"user": ["samuel.bucher@timenow.com.br", "teste"], "permission": ["Admin", "Solicitante"]})
+lista_usuarios = get_users()
+#lista_usuarios = pd.DataFrame.from_dict({"user": ["samuel.bucher@timenow.com.br", "teste"], "permission": ["Admin", "Solicitante"]})
 
 def login():
     st.header("Login")
@@ -75,11 +75,11 @@ def new_user():
     back_button = col2.button("Voltar")
     if submit_button:
         try:
-            #current_table = conn.query("SELECT * FROM usuarios")
+            current_table = conn.query("SELECT * FROM usuarios")
             actual_update = pd.DataFrame({"user": [email], "permission": ['Solicitante']})
-            #aux = pd.concat([current_table, actual_update], ignore_index=True)
-            lista_usuarios = pd.concat([lista_usuarios, actual_update], ignore_index=True)
-            #df = conn.update(worksheet="usuarios",data=aux)
+            aux = pd.concat([current_table, actual_update], ignore_index=True)
+            #lista_usuarios = pd.concat([lista_usuarios, actual_update], ignore_index=True)
+            df = conn.update(worksheet="usuarios",data=aux)
             st.success("Usuário cadastrado com sucesso!")
             st.session_state["role"] = "Solicitante"
             st.session_state["user"] = email
@@ -106,8 +106,8 @@ lista_tasks = pd.DataFrame.from_dict({
         "responsible": []})
 
 def generate_tasks(id_form, solicitacao):
-    #current_table = get_tasks()
-    current_table = lista_tasks
+    current_table = get_tasks()
+    #current_table = lista_tasks
     id = max(current_table['id_task'])
     if solicitacao == "Novo Desenvolvimento":
         tasks = ["Reunião de Entendimento", "Elaboração de Proposta", "Desenvolvimento"]
@@ -125,6 +125,6 @@ def generate_tasks(id_form, solicitacao):
         "bucket": ["Backlog", "Backlog", "Backlog"],
         "description": ["", "", ""],
         "responsible": ["", "", ""]})
-    #aux = pd.concat([current_table, actual_update], ignore_index=False)
-    lista_tasks = pd.concat([current_table, actual_update], ignore_index=False)
-    #new_table = conn.update(worksheet="tasks",data=aux)
+    aux = pd.concat([current_table, actual_update], ignore_index=False)
+    #lista_tasks = pd.concat([current_table, actual_update], ignore_index=False)
+    new_table = conn.update(worksheet="tasks",data=aux)

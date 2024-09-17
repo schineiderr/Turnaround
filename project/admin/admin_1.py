@@ -1,6 +1,5 @@
 import streamlit as st
-#from project.utils import lista_usuarios, conn
-from project.utils import lista_usuarios
+from project.utils import lista_usuarios, conn
 
 st.header("Admin 1")
 st.write(f"Você está logado como {st.session_state['role']}.")
@@ -21,8 +20,8 @@ with placeholder.container(border=True):
       save_button = st.button("Salvar")
    if save_button:
       try:
-         #df = conn.update(worksheet="usuarios",data=edited_lista_usuarios)
-         lista_usuarios = edited_lista_usuarios
+         df = conn.update(worksheet="usuarios",data=edited_lista_usuarios)
+         #lista_usuarios = edited_lista_usuarios
          st.success("Usuários atualizados com sucesso!")
       except:
          st.error("Não foi possível atualizar! Contate o desenvolvedor")
