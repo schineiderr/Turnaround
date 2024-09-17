@@ -1,7 +1,7 @@
 import streamlit as st
 #from utils import get_forms, get_tasks
-from pages.utils import lista_tasks
-from pages.request.request_2 import lista_forms
+from project.utils import lista_tasks
+from project.request.request_2 import lista_forms
 
 st.header("Acompanhe seu Desenvolvimento")
 user = st.session_state["user"]

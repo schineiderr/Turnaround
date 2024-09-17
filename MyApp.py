@@ -1,5 +1,5 @@
 import streamlit as st
-from pages.utils import login, new_user
+from project.utils import login, new_user
 
 # Start roles definition for pages flow
 
@@ -17,44 +17,44 @@ def logout():
     st.rerun()
 
 logout_page = st.Page(logout, title="Logout", icon=":material/logout:")
-settings = st.Page("pages/settings.py", title="Settings", icon=":material/settings:")
+settings = st.Page("project/settings.py", title="Settings", icon=":material/settings:")
 
 request_1 = st.Page(
-    "pages/request/request_1.py",
+    "project/request/request_1.py",
     title="Iniciativas",
     icon=":material/help:",
     default=(role == "Solicitante"),
 )
 request_2 = st.Page(
-    "pages/request/request_2.py", title="Abertura de Tickets", icon=":material/bug_report:"
+    "project/request/request_2.py", title="Abertura de Tickets", icon=":material/bug_report:"
 )
 request_3 = st.Page(
-    "pages/request/request_3.py", title="Acompanhe seu Desenvolvimento", icon=":material/bug_report:"
+    "project/request/request_3.py", title="Acompanhe seu Desenvolvimento", icon=":material/bug_report:"
 )
 request_4 = st.Page(
-    "pages/request/request_4.py", title="Receita Transformada", icon=":material/bug_report:"
+    "project/request/request_4.py", title="Receita Transformada", icon=":material/bug_report:"
 )
 request_5 = st.Page(
-    "pages/request/request_5.py", title="Pesquisa NPS", icon=":material/bug_report:"
+    "project/request/request_5.py", title="Pesquisa NPS", icon=":material/bug_report:"
 )
 
 respond_1 = st.Page(
-    "pages/respond/respond_1.py",
+    "project/respond/respond_1.py",
     title="Membro 1",
     icon=":material/healing:",
     default=(role == "Membro"),
 )
 respond_2 = st.Page(
-    "pages/respond/respond_2.py", title="Membro 2", icon=":material/handyman:"
+    "project/respond/respond_2.py", title="Membro 2", icon=":material/handyman:"
 )
 
 admin_1 = st.Page(
-    "pages/admin/admin_1.py",
+    "project/admin/admin_1.py",
     title="Admin 1",
     icon=":material/person_add:",
     default=(role == "Admin"),
 )
-admin_2 = st.Page("pages/admin/admin_2.py", title="Admin 2", icon=":material/security:")
+admin_2 = st.Page("project/admin/admin_2.py", title="Admin 2", icon=":material/security:")
 
 account_pages = [logout_page, settings]
 request_pages = [request_1, request_2, request_3, request_4, request_5]
@@ -63,7 +63,7 @@ admin_pages = [admin_1, admin_2]
 
 st.title("Gestão Turnaround")
 
-st.logo("pages/images/horizontal.png", icon_image="pages/images/icon.png")
+st.logo("project/images/horizontal.png", icon_image="project/images/icon.png")
 
 page_dict = {}
 

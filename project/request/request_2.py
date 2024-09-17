@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import time
-#from utils import get_contracts, get_forms, generate_tasks, conn
-from pages.utils import generate_tasks
+#from project.utils import get_contracts, get_forms, generate_tasks, conn
+from project.utils import generate_tasks
 
 
 #tabela_contratos = get_contracts()

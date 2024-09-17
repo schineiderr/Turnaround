@@ -2,6 +2,7 @@
 headless = false
 enableXsrfProtection = true
 enableCORS = true
+port = 5000
 
 [theme]
 # primaryColor = "#c2eae5"
