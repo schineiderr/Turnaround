@@ -1,12 +1,16 @@
 import streamlit as st
-from utils import get_forms, get_tasks
+#from utils import get_forms, get_tasks
+from pages.utils import lista_tasks
+from pages.request.request_2 import lista_forms
 
 st.header("Acompanhe seu Desenvolvimento")
 user = st.session_state["user"]
 st.write("Você está logado como: ", user)
 
-df_forms = get_forms()
-df_tasks = get_tasks()
+#df_forms = get_forms()
+df_forms = lista_forms
+#df_tasks = get_tasks()
+df_tasks = lista_tasks
 
 lista_desenvolvimentos = df_forms.query("email == @user")
 lista_id_forms = list(lista_desenvolvimentos["id"])
