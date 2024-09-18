@@ -11,6 +11,7 @@ __pycache__/
 .streamlit/secrets.toml
 .streamlit/turnaround.json
 .streamlit/streamlitteste.json
+.streamlit/client_secret.json
 build/
 develop-eggs/
 dist/

@@ -5,6 +5,13 @@ import streamlit as st
 import time
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
+import hashlib
+
+def my_hash(pwd):
+    pwd = pwd.encode('utf-8')
+    hash_obj = hashlib.sha256(pwd)
+    hex_hash = hash_obj.hexdigest()
+    return hex_hash
 
 #Create a connection object.
 @st.cache_resource
@@ -43,26 +50,32 @@ def get_role(user, lista_usuarios):
     for row in lista_usuarios.itertuples():
         if row.user == user:
             role = row.permission
+            user_pwd = row.password
             break
         else:
             role = False
-    return role
+            user_pwd = False
+    return role, user_pwd
 
 lista_usuarios = get_users()
-#lista_usuarios = pd.DataFrame.from_dict({"user": ["samuel.bucher@timenow.com.br", "teste"], "permission": ["Admin", "Solicitante"]})
 
 def login():
     st.header("Login")
     user = st.text_input("E-mail:")
-    role = get_role(user, lista_usuarios)
+    pwd = st.text_input("Senha:", type="password")
     col1, col2 = st.columns([1,8])
     if col1.button("Login"):
+        role, user_pwd = get_role(user, lista_usuarios)
         if not role:
             st.error("Usuário não encontrado!")
         else:
-            st.session_state["role"] = role
-            st.session_state["user"] = user
-            st.rerun()
+            hash_pwd = my_hash(pwd)
+            if user_pwd == hash_pwd:
+                st.session_state["role"] = role
+                st.session_state["user"] = user
+                st.rerun()
+            else:
+                 st.error("Senha incorreta!")
     if col2.button("Cadastrar"):
         st.session_state["role"] = "Cadastrar"
         st.rerun()
@@ -70,13 +83,19 @@ def login():
 def new_user():
     st.write("Faça seu cadastro: ")
     email = st.text_input("Email: ")
+    name = st.text_input("Nome: ")
+    pwd = st.text_input("Senha: ", type="password")
     col1, col2 = st.columns([1,6])
     submit_button = col1.button("Cadastrar")
     back_button = col2.button("Voltar")
     if submit_button:
         try:
-            current_table = conn.query("SELECT * FROM usuarios")
-            actual_update = pd.DataFrame({"user": [email], "permission": ['Solicitante']})
+            current_table = get_users()
+            actual_update = pd.DataFrame({"user": [email],
+                                          "name": [name],
+                                          "permission": ['Solicitante'],
+                                          "contract": [""],
+                                          "password": [my_hash(pwd)]})
             aux = pd.concat([current_table, actual_update], ignore_index=True)
             #lista_usuarios = pd.concat([lista_usuarios, actual_update], ignore_index=True)
             df = conn.update(worksheet="usuarios",data=aux)
@@ -93,17 +112,6 @@ def new_user():
     if back_button:
         st.session_state["role"] = None
         st.rerun()
-
-lista_tasks = pd.DataFrame.from_dict({
-        "id_forms": [],
-        "id_task": [],
-        "task": [],
-        "start_date": [],
-        "due_date": [],
-        "end_date": [],
-        "bucket": [],
-        "description": [],
-        "responsible": []})
 
 def generate_tasks(id_form, solicitacao):
     current_table = get_tasks()
