@@ -3,7 +3,7 @@ import streamlit as st
 # import time
 # from text_generation import InferenceAPIClient
 
-st.header("Conheça nossas Iniciativas!")
+st.header(f"Olá, {st.session_state['name'].split(' ')[0]}! Conheça nossas Iniciativas!")
 
 tab1, tab2 = st.tabs(["Ecossistema de Soluções", "Soluções DQOGE"])
 

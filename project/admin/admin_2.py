@@ -5,7 +5,7 @@ import streamlit as st
 # from office365.runtime.auth.authentication_context import AuthenticationContext
 
 st.header("Admin 2")
-st.write(f"Você está logado como {st.session_state['role']}.")
+st.write(f"Olá, {st.session_state['name'].split(' ')[0]}!")
 
 # sharepoint_url = "https://timenow.sharepoint.com/sites/Turnaround168"
 # folder_url = "/Turnaround168/Documentos%20Compartilhados/Gest%C3%A3o%20Turnaround"

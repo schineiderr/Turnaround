@@ -6,6 +6,7 @@ import time
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 import hashlib
+from datetime import datetime, timedelta
 
 def my_hash(pwd):
     pwd = pwd.encode('utf-8')
@@ -51,11 +52,13 @@ def get_role(user, lista_usuarios):
         if row.user == user:
             role = row.permission
             user_pwd = row.password
+            name = row.name
             break
         else:
             role = False
             user_pwd = False
-    return role, user_pwd
+            name = False
+    return role, user_pwd, name
 
 lista_usuarios = get_users()
 
@@ -65,7 +68,7 @@ def login():
     pwd = st.text_input("Senha:", type="password")
     col1, col2 = st.columns([1,8])
     if col1.button("Login"):
-        role, user_pwd = get_role(user, lista_usuarios)
+        role, user_pwd, name = get_role(user, lista_usuarios)
         if not role:
             st.error("Usuário não encontrado!")
         else:
@@ -73,6 +76,7 @@ def login():
             if user_pwd == hash_pwd:
                 st.session_state["role"] = role
                 st.session_state["user"] = user
+                st.session_state["name"] = name
                 st.rerun()
             else:
                  st.error("Senha incorreta!")
@@ -102,6 +106,7 @@ def new_user():
             st.success("Usuário cadastrado com sucesso!")
             st.session_state["role"] = "Solicitante"
             st.session_state["user"] = email
+            st.session_state["name"] = name
             st.cache_data.clear()
             time.sleep(2)
             st.rerun()
@@ -112,6 +117,10 @@ def new_user():
     if back_button:
         st.session_state["role"] = None
         st.rerun()
+
+hoje1 = datetime.today()
+#hoje2 = datetime.strptime(hoje1, "%d/%m/%y")
+hoje3 = hoje1 + timedelta(days=7)
 
 def generate_tasks(id_form, solicitacao):
     current_table = get_tasks()
@@ -128,7 +137,7 @@ def generate_tasks(id_form, solicitacao):
         "id_task": [id+1, id+2, id+3],
         "task": tasks,
         "start_date": ["", "", ""],
-        "due_date": ["", "", ""],
+        "due_date": [hoje3, "", ""],
         "end_date": ["", "", ""],
         "bucket": ["Backlog", "Backlog", "Backlog"],
         "description": ["", "", ""],

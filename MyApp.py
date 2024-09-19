@@ -7,6 +7,8 @@ if "role" not in st.session_state:
     st.session_state["role"] = None
 if "user" not in st.session_state:
     st.session_state["user"] = None
+if "name" not in st.session_state:
+    st.session_state["name"] = None
 
 ROLES = [None, "Cadastrar", "Solicitante", "Membro", "Admin"]
 
